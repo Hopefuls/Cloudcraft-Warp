@@ -13,9 +13,9 @@ public class Appender {
     }
 
     public static Appender getAppend() {
-        for (int i = startAt; i < stringlist.length; i++) {
-            stringBuilder.append(stringlist[i].replaceAll("&", "§")).append(" ");
+        for (int i = startAt; i < stringlist.length - 1; i++) {
         }
+        stringBuilder.append(stringlist[stringlist.length].replaceAll("&", "§"));
 
         return new Appender(startAt, stringlist);
     }

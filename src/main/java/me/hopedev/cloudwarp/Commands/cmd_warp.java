@@ -26,8 +26,8 @@ public class cmd_warp implements CommandExecutor {
             //Open GUI
             return true;
         }
-
         FileConfiguration warp = warpDatabaseManager.getConfig();
+
         switch (args[0]) {
 
             case "set":
@@ -35,27 +35,15 @@ public class cmd_warp implements CommandExecutor {
                     p.sendMessage("Bitte benenne deinen Warp");
                     break;
                 }
+
+                if (warpDatabaseManager.getWarp(args[1]).exists()) {
+
+                }
                 String name = new Appender(2, args).getAppend().getConvertedString();
-                warp.createSection("warps." + args[1]);
 
-                warp.set("warps." + args[1] + ".name", name);
+                warpDatabaseManager.setWarp(args[1], name, p.getLocation());
 
-                String loctemp = "warps." + args[1] + ".location";
-                Location ploc = p.getLocation();
-                // TODO Faulheit loswerden
-
-                warp.createSection(loctemp);
-                warp.set(loctemp + ".world", ploc.getWorld().getName());
-                warp.set(loctemp + ".x", ploc.getX());
-                warp.set(loctemp + ".y", ploc.getY());
-                warp.set(loctemp + ".z", ploc.getZ());
-                warp.createSection(loctemp + ".looking");
-                warp.set(loctemp + ".looking.yaw", ploc.getYaw());
-                warp.set(loctemp + ".looking.pitch", ploc.getPitch());
-
-
-                warpDatabaseManager.saveChanges(warp);
-                p.sendMessage("Warp erfolgreich gesetzt!");
+                p.sendMessage("Warp gesetzt!");
                 break;
 
             case "goto":
