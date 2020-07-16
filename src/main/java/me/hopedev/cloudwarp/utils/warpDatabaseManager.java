@@ -9,17 +9,17 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 
-public class warpParser {
+public class warpDatabaseManager {
     private static File warpFile;
     private static FileConfiguration warpFileconfig;
 
-    public warpParser() {
+    public warpDatabaseManager() {
 
     }
 
     public static void onPluginEnable() {
         createWarpDatabase();
-        warpParser.reloadConfig();
+        warpDatabaseManager.reloadConfig();
     }
 
 
@@ -28,18 +28,26 @@ public class warpParser {
         return warpFileconfig;
     }
 
-    public static warpParser reloadConfig() {
+    public static warpDatabaseManager reloadConfig() {
         System.out.println("Reloading config");
         // Insert reload method
         System.out.println("Config reloaded!");
 
-        return new warpParser();
+        return new warpDatabaseManager();
 
     }
 
     public static void addWarp(String warpname, ItemStack item) {
 
 
+    }
+
+    public static void saveChanges(FileConfiguration config) {
+        try {
+            config.save(warpFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -53,6 +61,9 @@ public class warpParser {
         warpFileconfig = new YamlConfiguration();
         try {
             warpFileconfig.load(warpFile);
+            warpFileconfig.createSection("warps.testwarp");
+            warpFileconfig.set("warps.testwarp.name", "testing this");
+            warpFileconfig.save(warpFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

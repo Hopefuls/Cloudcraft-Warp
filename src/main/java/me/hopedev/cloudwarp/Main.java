@@ -1,7 +1,7 @@
 package me.hopedev.cloudwarp;
 
 import me.hopedev.cloudwarp.Commands.cmd_warp;
-import me.hopedev.cloudwarp.utils.warpParser;
+import me.hopedev.cloudwarp.utils.warpDatabaseManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,7 +28,7 @@ public class Main extends JavaPlugin {
         this.plugin = this;
         this.getCommand("warp").setExecutor(new cmd_warp());
         System.out.println("Warps werden reloaded und geparst");
-        warpParser.onPluginEnable();
+        warpDatabaseManager.onPluginEnable();
         System.out.println("Warps geparst!");
         System.out.println("CloudWarp von HopeDev aktiviert!");
     }
