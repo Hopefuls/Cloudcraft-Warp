@@ -2,6 +2,7 @@ package me.hopedev.cloudwarp.Commands;
 
 import me.hopedev.cloudwarp.utils.Appender;
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -61,17 +62,22 @@ public class cmd_warp implements CommandExecutor {
                 String warpname = args[1];
                 String locatemp = "warps." + args[1] + ".location";
 
-                World world = Bukkit.getWorld(locatemp + ".world");
-                Double x = warp.getDouble(locatemp + ".x");
-                Double y = warp.getDouble(locatemp + ".y");
-                Double z = warp.getDouble(locatemp + ".z");
-                Float pitch = warp.getFloatList(locatemp + ".looking.pitch").get(0);
-                Float yaw = warp.getFloatList(locatemp + ".looking.yaw").get(0);
+                World world = Bukkit.getServer().getWorld(warp.getString(locatemp + ".world"));
 
-                Location location = new Location(world, x, y, z, pitch, yaw);
+                double x = warp.getDouble(locatemp + ".x");
+                double y = warp.getDouble(locatemp + ".y");
+                double z = warp.getDouble(locatemp + ".z");
+                float pitch = Float.parseFloat(warp.getString(locatemp + ".looking.pitch"));
+                float yaw = Float.parseFloat(warp.getString(locatemp + ".looking.yaw"));
+
+
+                Location location = new Location(world, x, y, z, yaw, pitch);
                 p.teleport(location);
                 p.sendMessage("Teleportiert!");
-                // Put others in here
+                break;
+
+            //other
+
             default:
 
                 p.sendMessage("Testing");

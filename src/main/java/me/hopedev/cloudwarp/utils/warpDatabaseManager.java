@@ -31,12 +31,22 @@ public class warpDatabaseManager {
     public static warpDatabaseManager reloadConfig(boolean silent) {
         if (silent) {
             System.out.println("Reloading config/warps");
-            // reload method
+            try {
+                warpFileconfig.load(warpFile);
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
+
             System.out.println("config/warps reloaded!");
             return new warpDatabaseManager();
         }
 
-        // reload method
+        try {
+            warpFileconfig.load(warpFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
         return new warpDatabaseManager();
     }
 
@@ -57,20 +67,19 @@ public class warpDatabaseManager {
     private static void createWarpDatabase() {
         warpFile = new File(Main.getPlugin().getDataFolder(), "warps.yml");
         if (!warpFile.exists()) {
+            System.out.println("Warp datenbank existiert nicht! Erstelle eine..");
             warpFile.getParentFile().mkdirs();
+
             Main.getPlugin().saveResource("warps.yml", false);
+            System.out.println("Erstellt!");
         }
-
         warpFileconfig = new YamlConfiguration();
-        ;
-        try {
 
-            warpFileconfig.save(warpFile);
-        } catch (IOException e) {
+        try {
+            warpFileconfig.load(warpFile);
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
