@@ -2,8 +2,8 @@
   <artifact type="jar" name="ExamplePlugin">
     <output-path>$PROJECT_DIR$/../ArtifactOUT</output-path>
     <root id="archive" name="ExamplePlugin.jar">
-      <element id="module-output" name="PluginTemplate" />
       <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
+      <element id="module-output" name="CloudWarp" />
     </root>
   </artifact>
 </component>
