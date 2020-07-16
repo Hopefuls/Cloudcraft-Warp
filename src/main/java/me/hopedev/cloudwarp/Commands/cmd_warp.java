@@ -1,5 +1,6 @@
 package me.hopedev.cloudwarp.Commands;
 
+import me.hopedev.cloudwarp.utils.warpParser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,10 +17,23 @@ public class cmd_warp implements CommandExecutor {
 
         if (args.length < 1) {
             p.sendMessage("Testing");
+            //Open GUI
             return true;
         }
 
-        p.sendMessage("works");
+        switch (args[0]) {
+            case "set":
+                // setwarp in here
+                break;
+
+
+            // Put others in here
+            default:
+                p.sendMessage("Testing");
+                //Open GUI
+                break;
+
+        }
         return false;
     }
 }
