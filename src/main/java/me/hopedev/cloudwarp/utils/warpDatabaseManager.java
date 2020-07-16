@@ -19,25 +19,28 @@ public class warpDatabaseManager {
 
     public static void onPluginEnable() {
         createWarpDatabase();
-        warpDatabaseManager.reloadConfig();
+        warpDatabaseManager.reloadConfig(false);
     }
 
 
     public static FileConfiguration getConfig() {
-        reloadConfig();
+        reloadConfig(true);
         return warpFileconfig;
     }
 
-    public static warpDatabaseManager reloadConfig() {
-        System.out.println("Reloading config");
-        // Insert reload method
-        System.out.println("Config reloaded!");
+    public static warpDatabaseManager reloadConfig(boolean silent) {
+        if (silent) {
+            System.out.println("Reloading config/warps");
+            // reload method
+            System.out.println("config/warps reloaded!");
+            return new warpDatabaseManager();
+        }
 
+        // reload method
         return new warpDatabaseManager();
-
     }
 
-    public static void addWarp(String warpname, ItemStack item) {
+    public static void addWarp(String warpname, String warptitle, ItemStack item) {
 
 
     }
@@ -60,11 +63,9 @@ public class warpDatabaseManager {
 
         warpFileconfig = new YamlConfiguration();
         try {
-            warpFileconfig.load(warpFile);
-            warpFileconfig.createSection("warps.testwarp");
-            warpFileconfig.set("warps.testwarp.name", "testing this");
+
             warpFileconfig.save(warpFile);
-        } catch (IOException | InvalidConfigurationException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

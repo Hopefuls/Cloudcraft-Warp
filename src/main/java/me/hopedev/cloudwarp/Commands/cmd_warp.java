@@ -1,5 +1,6 @@
 package me.hopedev.cloudwarp.Commands;
 
+import me.hopedev.cloudwarp.utils.Appender;
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,13 +25,18 @@ public class cmd_warp implements CommandExecutor {
         switch (args[0]) {
             case "set":
                 FileConfiguration warpFileconfig = warpDatabaseManager.getConfig();
-                warpFileconfig.createSection("warps." + "");
-                warpFileconfig.set("warps.testwarp.name", "testing this");
+                String name = new Appender(2, args).getAppend().getConvertedString();
+                warpFileconfig.createSection("warps." + args[1]);
+                warpFileconfig.set("warps." + args[1] + ".name", name);
+
+
                 warpDatabaseManager.saveChanges(warpFileconfig);
                 break;
 
+            case "goto":
 
-            // Put others in here
+
+                // Put others in here
             default:
 
                 p.sendMessage("Testing");
