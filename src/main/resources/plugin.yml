@@ -1,0 +1,8 @@
+name: CloudWarp
+main: me.hopedev.cloudwarp.Main
+author: HopeDev
+version: 1.0.0
+description: Proof of concept
+commands:
+  warp:
+    description: Warpbefehl
