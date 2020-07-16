@@ -2,7 +2,9 @@ package me.hopedev.cloudwarp.Commands;
 
 import me.hopedev.cloudwarp.utils.Appender;
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,11 +25,18 @@ public class cmd_warp implements CommandExecutor {
             //Open GUI
             return true;
         }
+
+        FileConfiguration warp = warpDatabaseManager.getConfig();
         switch (args[0]) {
+
             case "set":
-                FileConfiguration warp = warpDatabaseManager.getConfig();
+                if (args.length < 2) {
+                    p.sendMessage("Bitte benenne deinen Warp");
+                    break;
+                }
                 String name = new Appender(2, args).getAppend().getConvertedString();
                 warp.createSection("warps." + args[1]);
+
                 warp.set("warps." + args[1] + ".name", name);
 
                 String loctemp = "warps." + args[1] + ".location";
@@ -49,8 +58,19 @@ public class cmd_warp implements CommandExecutor {
                 break;
 
             case "goto":
+                String warpname = args[1];
+                String locatemp = "warps." + args[1] + ".location";
 
+                World world = Bukkit.getWorld(locatemp + ".world");
+                Double x = warp.getDouble(locatemp + ".x");
+                Double y = warp.getDouble(locatemp + ".y");
+                Double z = warp.getDouble(locatemp + ".z");
+                Float pitch = warp.getFloatList(locatemp + ".looking.pitch").get(0);
+                Float yaw = warp.getFloatList(locatemp + ".looking.yaw").get(0);
 
+                Location location = new Location(world, x, y, z, pitch, yaw);
+                p.teleport(location);
+                p.sendMessage("Teleportiert!");
                 // Put others in here
             default:
 
