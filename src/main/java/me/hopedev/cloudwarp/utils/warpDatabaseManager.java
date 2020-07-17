@@ -1,12 +1,14 @@
 package me.hopedev.cloudwarp.utils;
 
+import me.hopedev.cloudwarp.GUI.GUIManager;
 import me.hopedev.cloudwarp.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,18 +30,14 @@ public class warpDatabaseManager {
 
     public static boolean exists() {
 
-        if (getConfig().isSet("warps." + warpnamecheck))
-            return true;
-
-        else
-
-            return false;
+        return getConfig().isSet("warps." + warpnamecheck);
     }
 
 
     public static void onPluginEnable() {
         createWarpDatabase();
         warpDatabaseManager.reloadConfig(false);
+
     }
 
 
@@ -53,6 +51,7 @@ public class warpDatabaseManager {
             System.out.println("Reloading config/warps");
             try {
                 warpFileconfig.load(warpFile);
+                return;
             } catch (IOException | InvalidConfigurationException e) {
                 e.printStackTrace();
             }
@@ -123,16 +122,19 @@ public class warpDatabaseManager {
     public static void saveChanges(FileConfiguration config) {
         try {
             config.save(warpFile);
+            GUIManager.updateWarpGUI();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 
     private static void createWarpDatabase() {
         warpFile = new File(Main.getPlugin().getDataFolder(), "warps.yml");
         if (!warpFile.exists()) {
-            System.out.println("Warp datenbank existiert nicht! Erstelle eine..");
+            System.out.println("Warp Datenbank existiert nicht! Erstelle eine..");
             warpFile.getParentFile().mkdirs();
 
             Main.getPlugin().saveResource("warps.yml", false);
@@ -142,8 +144,36 @@ public class warpDatabaseManager {
 
         try {
             warpFileconfig.load(warpFile);
+            GUIManager.updateWarpGUI();
+
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void teleportToWarp(Player sender, Player target, String warpname) {
+        if (!getWarp(warpname).exists()) {
+            sender.sendMessage("Dieser warp existiert nicht!");
+            return;
+        }
+        FileConfiguration warp = getConfig();
+        String locatemp = "warps." + warpname + ".location";
+
+        World world = Bukkit.getServer().getWorld(warp.getString(locatemp + ".world"));
+
+        double x = warp.getDouble(locatemp + ".x");
+        double y = warp.getDouble(locatemp + ".y");
+        double z = warp.getDouble(locatemp + ".z");
+        float pitch = Float.parseFloat(warp.getString(locatemp + ".looking.pitch"));
+        float yaw = Float.parseFloat(warp.getString(locatemp + ".looking.yaw"));
+
+
+        Location location = new Location(world, x, y, z, yaw, pitch);
+        target.teleport(location);
+        target.sendMessage("Du wurdest teleportiert");
+        if (sender != null) {
+            sender.sendMessage("Du hast " + target.getName() + " teleportiert!");
+
         }
     }
 

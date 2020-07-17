@@ -1,11 +1,9 @@
 package me.hopedev.cloudwarp.Commands;
 
+import me.hopedev.cloudwarp.GUI.DefaultPage;
+import me.hopedev.cloudwarp.GUI.GUIManager;
 import me.hopedev.cloudwarp.utils.Appender;
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
-import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +21,7 @@ public class cmd_warp implements CommandExecutor {
 
         if (args.length < 1) {
             p.sendMessage("Testing");
-            //Open GUI
+            DefaultPage.open(p, 1);
             return true;
         }
         FileConfiguration warp = warpDatabaseManager.getConfig();
@@ -48,24 +46,14 @@ public class cmd_warp implements CommandExecutor {
 
             case "goto":
                 String warpname = args[1];
-                String locatemp = "warps." + args[1] + ".location";
-
-                World world = Bukkit.getServer().getWorld(warp.getString(locatemp + ".world"));
-
-                double x = warp.getDouble(locatemp + ".x");
-                double y = warp.getDouble(locatemp + ".y");
-                double z = warp.getDouble(locatemp + ".z");
-                float pitch = Float.parseFloat(warp.getString(locatemp + ".looking.pitch"));
-                float yaw = Float.parseFloat(warp.getString(locatemp + ".looking.yaw"));
-
-
-                Location location = new Location(world, x, y, z, yaw, pitch);
-                p.teleport(location);
-                p.sendMessage("Teleportiert!");
+                warpDatabaseManager.teleportToWarp(p, p, warpname);
                 break;
 
             //other
-
+            case "open":
+                GUIManager.pagedInventory.keySet().forEach(System.out::println);
+                p.openInventory(GUIManager.pagedInventory.get(Integer.valueOf(args[1])));
+                break;
             default:
 
                 p.sendMessage("Testing");
