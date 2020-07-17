@@ -2,6 +2,7 @@ package me.hopedev.cloudwarp.Commands;
 
 import me.hopedev.cloudwarp.GUI.DefaultPage;
 import me.hopedev.cloudwarp.GUI.GUIManager;
+import me.hopedev.cloudwarp.handlers.InputSessionHandler;
 import me.hopedev.cloudwarp.utils.Appender;
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
 import org.bukkit.command.Command;
@@ -20,7 +21,13 @@ public class cmd_warp implements CommandExecutor {
         Player p = (Player) sender;
 
         if (args.length < 1) {
+            if (InputSessionHandler.session.containsKey(p)) {
+                p.sendMessage("§cDu kannst derzeit das Warp Menü nicht öffnen, da du im Erstellungsmodus bist");
+                p.sendMessage("§cSchreibe \"abort\" um abzubrechen");
+                return true;
+            }
             p.sendMessage("Testing");
+
             DefaultPage.open(p, 1);
             return true;
         }
@@ -34,9 +41,7 @@ public class cmd_warp implements CommandExecutor {
                     break;
                 }
 
-                if (warpDatabaseManager.getWarp(args[1]).exists()) {
 
-                }
                 String name = new Appender(2, args).getAppend().getConvertedString();
 
                 warpDatabaseManager.setWarp(args[1], name, p.getLocation());

@@ -80,6 +80,9 @@ public class GUIManager {
 
 
         }
+        for (int i = 3 * 9; i < 5 * 9; i++) {
+            inv.setItem(i, InventoryTools.getPane(DyeColor.BLACK));
+        }
         inv.setItem(5 * 9 - 1, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
         inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));
         inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));

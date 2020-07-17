@@ -69,6 +69,8 @@ public class warpDatabaseManager {
     }
 
     public static void setWarp(String warpname, String warptitle, Location playerLocation) {
+        System.err.println(warpname);
+        System.out.println("Warp set");
         FileConfiguration warp = getConfig();
         warp.createSection("warps." + warpname);
 
@@ -87,7 +89,11 @@ public class warpDatabaseManager {
         warp.set(loctemp + ".looking.yaw", playerLocation.getYaw());
         warp.set(loctemp + ".looking.pitch", playerLocation.getPitch());
 
-
+        if (warp.get("warps." + warpname + ".location.world") != null) {
+            activePlayer.sendMessage("§aWarp wurde aktualisiert!");
+        } else {
+            activePlayer.sendMessage("§aWarp wurde erstellt!");
+        }
         warpDatabaseManager.saveChanges(warp);
 
 
@@ -175,6 +181,17 @@ public class warpDatabaseManager {
             sender.sendMessage("Du hast " + target.getName() + " teleportiert!");
 
         }
+    }
+
+    public static void deleteWarp(String warpname) {
+        FileConfiguration warp = getConfig();
+
+        if (warp.get("warps." + warpname) == null) {
+            System.out.println("Warp does not exist, returning");
+            return;
+        }
+        warp.set("warps." + warpname, null);
+        saveChanges(warp);
     }
 
 }
