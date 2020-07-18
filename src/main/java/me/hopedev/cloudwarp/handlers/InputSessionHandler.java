@@ -1,6 +1,7 @@
 package me.hopedev.cloudwarp.handlers;
 
 import me.hopedev.cloudwarp.utils.warpDatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -70,9 +71,10 @@ public class InputSessionHandler implements Listener {
             } else {
                 updateSessionInput(p, CurrentSession.WarpName, event.getMessage());
                 setSession(p, CurrentSession.WarpTitle);
-                p.sendMessage("§aDer neue Warp wird §e" + event.getMessage() + " §aheißen");
-                p.sendMessage("§aGebe bitte jetzt einen Titel für den Warp ein (Mehrere Wörter, alle Zeichen)");
-                p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1L, 0L);
+                p.sendMessage("§c");
+                p.sendMessage("§bDer neue Warp wird §9" + event.getMessage() + " §bheißen");
+                p.sendMessage("§bGebe bitte jetzt einen Titel für den Warp ein (Mehrere Wörter, alle Zeichen) (Colorcodes könnenn verwendet werden)");
+                p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1L, 1L);
 
             }
 
@@ -89,7 +91,7 @@ public class InputSessionHandler implements Listener {
                 HashMap<CurrentSession, String> hashy = sessionInput.get(p);
 
                 System.out.println("Inputsessionhandler hashy " + hashy.get(CurrentSession.WarpName));
-                warpDatabaseManager.setWarp(getSessionContent(p, CurrentSession.WarpName), getSessionContent(p, CurrentSession.WarpTitle), p.getLocation());
+                warpDatabaseManager.setWarp(getSessionContent(p, CurrentSession.WarpName), getSessionContent(p, CurrentSession.WarpTitle), p.getLocation(), Bukkit.getOfflinePlayer(p.getUniqueId()));
                 p.playSound(p.getLocation(), Sound.LEVEL_UP, 1L, 0L);
                 deleteSession(p);
             }

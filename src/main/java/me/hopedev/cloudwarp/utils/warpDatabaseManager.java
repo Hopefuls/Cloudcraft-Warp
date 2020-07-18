@@ -4,6 +4,7 @@ import me.hopedev.cloudwarp.GUI.GUIManager;
 import me.hopedev.cloudwarp.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,15 +49,16 @@ public class warpDatabaseManager {
 
     public static void reloadConfig(boolean silent) {
         if (silent) {
-            System.out.println("Reloading config/warps");
+            // System.out.println("Reloading config/warps");
             try {
                 warpFileconfig.load(warpFile);
                 return;
             } catch (IOException | InvalidConfigurationException e) {
+                createWarpDatabase();
                 e.printStackTrace();
             }
 
-            System.out.println("config/warps reloaded!");
+            // System.out.println("config/warps reloaded!");
             return;
         }
 
@@ -65,14 +67,15 @@ public class warpDatabaseManager {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-
+        GUIManager.updateWarpGUI();
     }
 
-    public static void setWarp(String warpname, String warptitle, Location playerLocation) {
+    public static void setWarp(String warpname, String warptitle, Location playerLocation, OfflinePlayer offlinePlayer) {
         System.err.println(warpname);
-        System.out.println("Warp set");
+        // System.out.println("Warp set");
         FileConfiguration warp = getConfig();
         warp.createSection("warps." + warpname);
+        warp.set("warps." + warpname + ".player", offlinePlayer);
 
         warp.set("warps." + warpname + ".name", warptitle);
 
@@ -89,39 +92,15 @@ public class warpDatabaseManager {
         warp.set(loctemp + ".looking.yaw", playerLocation.getYaw());
         warp.set(loctemp + ".looking.pitch", playerLocation.getPitch());
 
-        if (warp.get("warps." + warpname + ".location.world") != null) {
-            activePlayer.sendMessage("§aWarp wurde aktualisiert!");
-        } else {
-            activePlayer.sendMessage("§aWarp wurde erstellt!");
+        try {
+            warp.getConfigurationSection(loctemp + ".world").getKeys(false);
+            activePlayer.sendMessage("§b§l[CloudCraft]§9§l Warp wurde aktualisiert!");
+        } catch (Exception e) {
+            activePlayer.sendMessage("§b§l[CloudCraft]§9§l Warp wurde erstellt!");
         }
         warpDatabaseManager.saveChanges(warp);
 
 
-    }
-
-    public static void updateWarp(String warpname, String warptitle) {
-        if (!getWarp(warpname).exists()) {
-            System.err.println("Warp doesn't exist");
-        } else {
-            Location playerLocation = activePlayer.getLocation();
-            FileConfiguration warp = getConfig();
-
-            warp.set("warps." + warpname + ".name", warptitle);
-
-            String loctemp = "warps." + warpname + ".location";
-
-            // TODO Faulheit loswerden
-
-            warp.set(loctemp + ".world", playerLocation.getWorld().getName());
-            warp.set(loctemp + ".x", playerLocation.getX());
-            warp.set(loctemp + ".y", playerLocation.getY());
-            warp.set(loctemp + ".z", playerLocation.getZ());
-            warp.set(loctemp + ".looking.yaw", playerLocation.getYaw());
-            warp.set(loctemp + ".looking.pitch", playerLocation.getPitch());
-
-
-            warpDatabaseManager.saveChanges(warp);
-        }
     }
 
 
@@ -176,7 +155,7 @@ public class warpDatabaseManager {
 
         Location location = new Location(world, x, y, z, yaw, pitch);
         target.teleport(location);
-        target.sendMessage("Du wurdest teleportiert");
+        target.sendMessage("§b§l[CloudCraft]§9§l Du wurdest zum Warp §b\"" + warpname + "\" §9teleportiert!");
         if (sender != null) {
             sender.sendMessage("Du hast " + target.getName() + " teleportiert!");
 

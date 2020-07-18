@@ -5,6 +5,7 @@ import me.hopedev.cloudwarp.utils.warpDatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 
@@ -23,8 +24,26 @@ public class GUIManager {
 
         FileConfiguration database = new warpDatabaseManager(null).getConfig();
 
-        System.out.println(database.getStringList("warps"));
-        System.out.println(database.getConfigurationSection("warps").getKeys(false));
+        // System.out.println(database.getStringList("warps"));
+        try {
+            database.getConfigurationSection("warps").getKeys(false);
+        } catch (NullPointerException ex) {
+
+            System.out.println("Configuration Empty");
+            HashMap<Integer, String> WarpNameSlot = new HashMap<>();
+            Inventory inv = Bukkit.getServer().createInventory(new GUIHolder(page), 5 * 9, "§bCloud§9Warp §7| §9" + page + "/1");
+            for (int i = 3 * 9; i < 5 * 9; i++) {
+                inv.setItem(i, InventoryTools.getPane(DyeColor.BLACK));
+            }
+            inv.setItem(5 * 9 - 1, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
+            inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));
+            inv.setItem(5 * 9 - 5, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
+            pagedInventory.put(page, inv);
+            WarpNameGetter.put(page, WarpNameSlot);
+            return;
+        }
+
+        // System.out.println(database.getConfigurationSection("warps").getKeys(false));
 
         int count = 0;
         int predictedPageCount = 1;
@@ -51,10 +70,12 @@ public class GUIManager {
                 inv.setItem(i, InventoryTools.getPane(DyeColor.BLACK));
             }
 
-            // Set paper on the inventory
-            inv.setItem(slot, InventoryTools.createGUIItem(Material.PAPER, Warpname, " ", "Click to teleport"));
+            String warptitle = database.getString("warps." + Warpname + ".name");
+
+            OfflinePlayer player = database.getOfflinePlayer("warps." + Warpname + ".player");
+            inv.setItem(slot, InventoryTools.createGUIItem(Material.PAPER, warptitle.replaceAll("&", "§"), "§eWarpname: §6" + Warpname, "§eErstellt von: §6" + player.getName(), "§c", "§c", "§a§oKlicke zum Teleportieren"));
             WarpNameSlot.put(slot, Warpname);
-            System.out.println("added " + Warpname + " on page " + page);
+            // System.out.println("added " + Warpname + " on page " + page);
             slot++;
 
             if (slot == 27) {
@@ -66,15 +87,15 @@ public class GUIManager {
 
                 pagedInventory.put(page, inv);
                 WarpNameGetter.put(page, WarpNameSlot);
-                System.out.println("27 reached, resetting ");
+                // System.out.println("27 reached, resetting ");
 
                 slot = 0;
 
                 page++;
                 inv = Bukkit.getServer().createInventory(new GUIHolder(page), 5 * 9, "§bCloud§9Warp §7| §9" + page + "/" + predictedPageCount);
-                System.out.println("Page is " + page);
+                // System.out.println("Page is " + page);
 
-                System.out.println("Page is now " + page);
+                // System.out.println("Page is now " + page);
 
             }
 

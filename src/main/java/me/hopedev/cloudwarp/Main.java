@@ -21,7 +21,7 @@ public class Main extends JavaPlugin {
     //Default onDisable
     @Override
     public void onDisable() {
-        System.out.println("CloudWarp von HopeDev deaktiviert!");
+        System.out.println("[CLOUDWARP] CloudWarp von HopeDev deaktiviert!");
     }
 
     // Default onEnable
@@ -29,12 +29,12 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         this.getCommand("warp").setExecutor(new cmd_warp());
-        System.out.println("Warps werden reloaded und geparst");
+        System.out.println("[CLOUDWARP] Warps werden reloaded und geparst");
         warpDatabaseManager.onPluginEnable();
-        System.out.println("Warps geparst!");
+        System.out.println("[CLOUDWARP] Warps wurden geparst!");
 
         getServer().getPluginManager().registerEvents(new GUIActionListener(), this);
         getServer().getPluginManager().registerEvents(new InputSessionHandler(), this);
-        System.out.println("CloudWarp von HopeDev aktiviert!");
+        System.out.println("[CLOUDWARP] CloudWarp von HopeDev aktiviert!");
     }
 }

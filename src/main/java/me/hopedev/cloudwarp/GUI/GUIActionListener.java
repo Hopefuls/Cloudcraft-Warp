@@ -23,8 +23,8 @@ public class GUIActionListener implements Listener {
             HashMap<Integer /*Page*/, HashMap<Integer /*Slot*/, String /*Warpname*/>> PagerHolder = GUIManager.WarpNameGetter;
             HashMap<Integer /*Slot*/, String /*Warpname*/> pagedInventories = PagerHolder.get(page);
 
-            System.out.println(PagerHolder.get(page).size());
-            System.out.println(pagedInventories.size());
+            // System.out.println(PagerHolder.get(page).size());
+            // System.out.println(pagedInventories.size());
             if (event.getSlot() == 5 * 9 - 1) {
                 if (page + 1 > GUIManager.pagedInventory.size()) {
                     p.playSound(p.getLocation(), Sound.NOTE_BASS, 1L, 2L);
@@ -49,28 +49,29 @@ public class GUIActionListener implements Listener {
                     p.closeInventory();
                     p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1L, 0L);
                     InputSessionHandler.setSession(p, InputSessionHandler.CurrentSession.WarpName);
-                    event.getWhoClicked().sendMessage("§aDu bist jetzt im §6Warp-Erstellungsmodus§a! Schreibe §c\"abort\"§a um abzubrechen");
+                    event.getWhoClicked().sendMessage("§bDu bist jetzt im §9Warp-Erstellungsmodus§b!");
+                    event.getWhoClicked().sendMessage("§bSchreibe §c\"abort\"§b um abzubrechen");
                     event.getWhoClicked().sendMessage("§c");
-                    event.getWhoClicked().sendMessage("§6Bitte schreibe den §eWarpnamen§6 den der Warp haben soll (1 Wort, alle Zeichen)");
+                    event.getWhoClicked().sendMessage("§bBitte schreibe den §9Warpnamen§b den der Warp haben soll (1 Wort)");
                 }
                 return;
             }
 
-            if (event.getCurrentItem().getTypeId() == 339) {
+            if (event.getCurrentItem().getTypeId() == 339 && event.getCurrentItem() != null) {
                 if (event.getClick().isShiftClick()) {
                     new warpDatabaseManager(p).deleteWarp(pagedInventories.get(event.getSlot()));
                     p.playSound(p.getLocation(), Sound.BAT_DEATH, 1L, 1L);
 
-                    p.sendMessage("§aWarp wurde gelöscht");
+                    p.sendMessage("§b§l[CloudCraft]§r§c Warp wurde gelöscht!");
                     p.closeInventory();
                     DefaultPage.open(p, 1);
                     return;
                 }
                 new warpDatabaseManager(p).teleportToWarp(null, p, pagedInventories.get(event.getSlot()));
                 p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1L, 1L);
+
+
             }
-
-
         }
     }
 }
