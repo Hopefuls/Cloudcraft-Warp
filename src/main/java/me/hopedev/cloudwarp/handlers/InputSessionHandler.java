@@ -32,8 +32,8 @@ public class InputSessionHandler implements Listener {
         hashy.put(currentSession, text);
         sessionInput.put(p, hashy);
 
-        System.out.println("Does this work? " + sessionInput.get(p).get(currentSession));
-        System.out.println("Successfully set session to " + getSessionContent(p, currentSession));
+        // System.out.println("Does this work? " + sessionInput.get(p).get(currentSession));
+        // System.out.println("Successfully set session to " + getSessionContent(p, currentSession));
     }
 
     public static void deleteSession(Player p) {
@@ -88,11 +88,34 @@ public class InputSessionHandler implements Listener {
             } else {
                 updateSessionInput(p, CurrentSession.WarpTitle, event.getMessage());
 
-                HashMap<CurrentSession, String> hashy = sessionInput.get(p);
+                setSession(p, CurrentSession.WarpDescription);
+                p.sendMessage("§c");
+                p.sendMessage("§bDer Warp wird den Titel \"" + event.getMessage().replaceAll("&", "§") + "§r§b\" haben");
+                p.sendMessage("§bGebe bitte jetzt eine Beschreibung für den Warp ein. Benutze %next% um die Zeile zu wechseln (Beispiel: \"Hallo das ist Zeile1%next%Hallo das ist Zeile2\")");
+                p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1L, 1L);
 
-                System.out.println("Inputsessionhandler hashy " + hashy.get(CurrentSession.WarpName));
-                warpDatabaseManager.setWarp(getSessionContent(p, CurrentSession.WarpName), getSessionContent(p, CurrentSession.WarpTitle), p.getLocation(), Bukkit.getOfflinePlayer(p.getUniqueId()));
-                p.playSound(p.getLocation(), Sound.LEVEL_UP, 1L, 0L);
+                // HashMap<CurrentSession, String> hashy = sessionInput.get(p);
+                // System.out.println("Inputsessionhandler hashy " + hashy.get(CurrentSession.WarpName));
+                // warpDatabaseManager.setWarp(getSessionContent(p, CurrentSession.WarpName), getSessionContent(p, CurrentSession.WarpTitle), p.getLocation(), Bukkit.getOfflinePlayer(p.getUniqueId()));
+                p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1L, 2L);
+
+
+            }
+        } else if (session.get(p).equals(CurrentSession.WarpDescription)) {
+            event.setCancelled(true);
+            if (event.getMessage().equalsIgnoreCase("abort")) {
+                deleteSession(p);
+                event.getPlayer().sendMessage("§cAbgebrochen");
+                p.playSound(p.getLocation(), Sound.BAT_DEATH, 1L, 1L);
+            } else {
+
+                updateSessionInput(p, CurrentSession.WarpDescription, event.getMessage().replaceAll("&", "§"));
+
+                // HashMap<CurrentSession, String> hashy = sessionInput.get(p); --> UNUSED FOR NOW
+
+                // System.out.println("Inputsessionhandler hashy " + hashy.get(CurrentSession.WarpName));
+                warpDatabaseManager.setWarp(getSessionContent(p, CurrentSession.WarpName), getSessionContent(p, CurrentSession.WarpTitle), p.getLocation(), Bukkit.getOfflinePlayer(p.getUniqueId()), getSessionContent(p, CurrentSession.WarpDescription));
+                p.playSound(p.getLocation(), Sound.LEVEL_UP, 1L, 2L);
                 deleteSession(p);
             }
         }
@@ -101,6 +124,7 @@ public class InputSessionHandler implements Listener {
 
     public enum CurrentSession {
         WarpName,
-        WarpTitle
+        WarpTitle,
+        WarpDescription,
     }
 }

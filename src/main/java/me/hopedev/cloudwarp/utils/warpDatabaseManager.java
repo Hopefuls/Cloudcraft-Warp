@@ -13,13 +13,14 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class warpDatabaseManager {
     static Player activePlayer;
     private static File warpFile;
     private static FileConfiguration warpFileconfig;
     private static String warpnamecheck;
-
+    public static ArrayList<Player> activeSessions = new ArrayList<>();
     public warpDatabaseManager(Player p) {
         activePlayer = p;
     }
@@ -70,7 +71,7 @@ public class warpDatabaseManager {
         GUIManager.updateWarpGUI();
     }
 
-    public static void setWarp(String warpname, String warptitle, Location playerLocation, OfflinePlayer offlinePlayer) {
+    public static void setWarp(String warpname, String warptitle, Location playerLocation, OfflinePlayer offlinePlayer, String description) {
         System.err.println(warpname);
         // System.out.println("Warp set");
         FileConfiguration warp = getConfig();
@@ -78,7 +79,7 @@ public class warpDatabaseManager {
         warp.set("warps." + warpname + ".player", offlinePlayer);
 
         warp.set("warps." + warpname + ".name", warptitle);
-
+        warp.set("warps." + warpname + ".description", description);
         String loctemp = "warps." + warpname + ".location";
 
         // TODO Faulheit loswerden
@@ -171,6 +172,10 @@ public class warpDatabaseManager {
         }
         warp.set("warps." + warpname, null);
         saveChanges(warp);
+    }
+
+    public static void restartGUIForAll() {
+
     }
 
 }

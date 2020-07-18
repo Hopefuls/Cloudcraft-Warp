@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class InventoryTools {
@@ -17,6 +18,20 @@ public class InventoryTools {
         meta.setDisplayName(name);
         // Set the lore of the item
         meta.setLore(Arrays.asList(lore));
+        item.setItemMeta(meta);
+        return item;
+
+    }
+
+    public static ItemStack createGUIItemAppend(final Material material, String name, final ArrayList<String> arry) {
+
+
+        final ItemStack item = new ItemStack(material, 1);
+        final ItemMeta meta = item.getItemMeta();
+        // Set the name of the item
+        meta.setDisplayName(name);
+        // Set the lore of the item
+        meta.setLore(arry);
         item.setItemMeta(meta);
         return item;
 

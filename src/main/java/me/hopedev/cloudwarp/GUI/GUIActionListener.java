@@ -57,21 +57,30 @@ public class GUIActionListener implements Listener {
                 return;
             }
 
-            if (event.getCurrentItem().getTypeId() == 339 && event.getCurrentItem() != null) {
-                if (event.getClick().isShiftClick()) {
-                    new warpDatabaseManager(p).deleteWarp(pagedInventories.get(event.getSlot()));
-                    p.playSound(p.getLocation(), Sound.BAT_DEATH, 1L, 1L);
 
-                    p.sendMessage("§b§l[CloudCraft]§r§c Warp wurde gelöscht!");
-                    p.closeInventory();
-                    DefaultPage.open(p, 1);
-                    return;
+            try {
+                if (event.getCurrentItem().getTypeId() == 339 && event.getCurrentItem() != null) {
+                    if (event.getClick().isShiftClick()) {
+                        new warpDatabaseManager(p).deleteWarp(pagedInventories.get(event.getSlot()));
+                        p.playSound(p.getLocation(), Sound.BAT_DEATH, 1L, 1L);
+
+                        p.sendMessage("§b§l[CloudCraft]§r§c Warp wurde gelöscht!");
+                        p.closeInventory();
+                        DefaultPage.open(p, 1);
+                        return;
+                    }
+                    new warpDatabaseManager(p).teleportToWarp(null, p, pagedInventories.get(event.getSlot()));
+                    p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1L, 1L);
+
+
                 }
-                new warpDatabaseManager(p).teleportToWarp(null, p, pagedInventories.get(event.getSlot()));
-                p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1L, 1L);
-
-
+            } catch (Exception e) {
+                // Nobody
+                // Absolutely nobody
+                // Me when putting stuff into the exception so it doesn't say anything:
+                // https://www.youtube.com/watch?v=dQw4w9WgXcQ
             }
+
         }
     }
 }

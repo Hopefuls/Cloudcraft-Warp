@@ -7,10 +7,10 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class GUIManager {
     // Needed for the GUIActionListener.java to get the warps and teleport to them
@@ -73,7 +73,15 @@ public class GUIManager {
             String warptitle = database.getString("warps." + Warpname + ".name");
 
             OfflinePlayer player = database.getOfflinePlayer("warps." + Warpname + ".player");
-            inv.setItem(slot, InventoryTools.createGUIItem(Material.PAPER, warptitle.replaceAll("&", "§"), "§eWarpname: §6" + Warpname, "§eErstellt von: §6" + player.getName(), "§c", "§c", "§a§oKlicke zum Teleportieren"));
+            String[] splitdesc = database.getString("warps." + Warpname + ".description").split("%next%");
+            ArrayList<String> stringsu = new ArrayList<>();
+            stringsu.add("§c");
+            Collections.addAll(stringsu, splitdesc);
+            stringsu.add("§c");
+            stringsu.add("§c");
+            stringsu.add("§a§oKlicke zum Teleportieren");
+            inv.setItem(slot, InventoryTools.createGUIItemAppend(Material.PAPER, warptitle.replaceAll("&", "§"), stringsu));
+            // inv.setItem(slot, InventoryTools.createGUIItem(Material.PAPER, warptitle.replaceAll("&", "§"), "§c", "§c", "§c", "§a§oKlicke zum Teleportieren"));
             WarpNameSlot.put(slot, Warpname);
             // System.out.println("added " + Warpname + " on page " + page);
             slot++;
@@ -81,9 +89,6 @@ public class GUIManager {
             if (slot == 27) {
 
                 int pgmath = page + 1;
-                inv.setItem(5 * 9 - 1, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
-                inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));
-                inv.setItem(5 * 9 - 5, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
 
                 pagedInventory.put(page, inv);
                 WarpNameGetter.put(page, WarpNameSlot);
@@ -101,16 +106,18 @@ public class GUIManager {
 
 
         }
-        for (int i = 3 * 9; i < 5 * 9; i++) {
-            inv.setItem(i, InventoryTools.getPane(DyeColor.BLACK));
-        }
-        inv.setItem(5 * 9 - 1, InventoryTools.createGUIItem(Material.SIGN, "§cNächste Seite"));
-        inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));
-        inv.setItem(5 * 9 - 9, InventoryTools.createGUIItem(Material.SIGN, "§cVorherige Seite"));
 
         pagedInventory.put(page, inv);
         WarpNameGetter.put(page, WarpNameSlot);
 
+        try {
+            for (Player p : warpDatabaseManager.activeSessions) {
+                DefaultPage.open(p, 1);
+            }
+
+        } catch (ConcurrentModificationException ex) {
+
+        }
 
     }
 
